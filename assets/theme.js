@@ -258,31 +258,50 @@
     });
   }
 
+  /* ---------- Product recommendations (Search & Discovery API) ---------- */
+  var recEl = $('[data-product-recommendations]');
+  if (recEl && recEl.dataset.url) {
+    fetch(recEl.dataset.url, { headers: { 'Accept': 'text/html' } })
+      .then(function (r) { return r.text(); })
+      .then(function (text) {
+        var doc = new DOMParser().parseFromString(text, 'text/html');
+        var inner = doc.querySelector('[data-product-recommendations]');
+        if (inner && inner.innerHTML.trim().length) {
+          recEl.innerHTML = inner.innerHTML;
+          // Re-bind quick-add for the freshly injected cards
+          bindQuickAdd($all('[data-quick-add]', recEl));
+        }
+      })
+      .catch(function () {});
+  }
+
   /* ---------- Quick add from product cards ---------- */
-  $all('[data-quick-add]').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      var id = this.getAttribute('data-variant-id');
-      if (!id) return;
-      var label = $('[data-quick-add-label]', this) || this;
-      var prev = label.textContent;
-      var self = this;
-      self.disabled = true;
-      label.textContent = 'Adding…';
-      fetch(routes.cart_add_url + '.js', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ id: id, quantity: 1 })
-      }).then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
-        .then(function (res) {
-          if (!res.ok) { label.textContent = (res.data && res.data.description) || 'Unavailable'; }
-          else {
-            label.textContent = 'Added ✓';
-            refreshCart(theme.cartType === 'drawer');
-          }
-          setTimeout(function () { label.textContent = prev; self.disabled = false; }, 1400);
-        }).catch(function () { label.textContent = prev; self.disabled = false; });
+  function bindQuickAdd(buttons) {
+    buttons.forEach(function (btn) {
+      if (btn._quickBound) return;
+      btn._quickBound = true;
+      btn.addEventListener('click', function () {
+        var id = this.getAttribute('data-variant-id');
+        if (!id) return;
+        var label = $('[data-quick-add-label]', this) || this;
+        var prev = label.textContent;
+        var self = this;
+        self.disabled = true;
+        label.textContent = 'Adding…';
+        fetch(routes.cart_add_url + '.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ id: id, quantity: 1 })
+        }).then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+          .then(function (res) {
+            if (!res.ok) { label.textContent = (res.data && res.data.description) || 'Unavailable'; }
+            else { label.textContent = 'Added ✓'; refreshCart(theme.cartType === 'drawer'); }
+            setTimeout(function () { label.textContent = prev; self.disabled = false; }, 1400);
+          }).catch(function () { label.textContent = prev; self.disabled = false; });
+      });
     });
-  });
+  }
+  bindQuickAdd($all('[data-quick-add]'));
 
   /* ---------- Variant selection ---------- */
   var productEl = $('[data-product]');

@@ -20,13 +20,12 @@
       "block_order": ["vendor", "title", "price", "buy_buttons", "description", "sku", "shipping"]
     },
     "related": {
-      "type": "featured-collection",
+      "type": "product-recommendations",
       "settings": {
         "subheading": "You may also like",
         "heading": "Complete your bag",
         "products_to_show": 4,
-        "columns": 4,
-        "show_view_all": false
+        "columns": 4
       }
     }
   },

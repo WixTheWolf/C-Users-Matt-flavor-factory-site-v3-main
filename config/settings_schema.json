@@ -225,6 +225,22 @@
         "id": "enable_quick_add",
         "label": "Enable quick-add on product cards",
         "default": true
+      },
+      {
+        "type": "header",
+        "content": "Cart upsell"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_cart_upsell",
+        "label": "Show 'Add to your order' upsell in cart drawer",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "cart_upsell_heading",
+        "label": "Cart upsell heading",
+        "default": "Add to your order"
       }
     ]
   }

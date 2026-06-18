@@ -1,0 +1,59 @@
+{
+  "sections": {
+    "intro": {
+      "type": "rich-text",
+      "settings": { "text_align": "center" },
+      "blocks": {
+        "s1": { "type": "subheading", "settings": { "text": "Our story" } },
+        "s2": { "type": "heading", "settings": { "text": "Built by golfers, for golfers" } },
+        "s3": { "type": "text", "settings": { "text": "<p>WYX Golf Supply started with a simple idea: premium gear shouldn't come with a pro-shop markup. We hand-pick and quality-check every club, ball, and accessory so you can play your best round with confidence.</p>" } }
+      },
+      "block_order": ["s1", "s2", "s3"]
+    },
+    "stats": {
+      "type": "stats",
+      "settings": { "heading": "" },
+      "blocks": {
+        "a": { "type": "stat", "settings": { "value": "10k+", "label": "Golfers served" } },
+        "b": { "type": "stat", "settings": { "value": "4.9★", "label": "Average rating" } },
+        "c": { "type": "stat", "settings": { "value": "500+", "label": "Products curated" } },
+        "d": { "type": "stat", "settings": { "value": "48hr", "label": "Fast dispatch" } }
+      },
+      "block_order": ["a", "b", "c", "d"]
+    },
+    "mission": {
+      "type": "image-with-text",
+      "settings": {
+        "layout": "text-first",
+        "subheading": "Our promise",
+        "heading": "Performance you can trust",
+        "text": "<p>From tee to green, every product we carry is chosen for performance and durability. If it doesn't make the cut for our own bags, it doesn't make it to the shelf.</p>",
+        "button_label": "Shop the collection"
+      }
+    },
+    "values": {
+      "type": "value-props",
+      "settings": {}
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "settings": { "subheading": "Loved by golfers", "heading": "What our customers say", "columns": 3 },
+      "blocks": {
+        "t1": { "type": "testimonial", "settings": { "rating": 5, "quote": "Best golf gear I've bought online. Fast shipping and the quality is top notch.", "author": "Jordan M.", "detail": "Verified buyer" } },
+        "t2": { "type": "testimonial", "settings": { "rating": 5, "quote": "Dialed in my whole bag here. Prices beat the pro shop every time.", "author": "Casey R.", "detail": "Verified buyer" } },
+        "t3": { "type": "testimonial", "settings": { "rating": 5, "quote": "Customer service actually knows golf. Helped me pick the right shafts.", "author": "Sam T.", "detail": "Verified buyer" } }
+      },
+      "block_order": ["t1", "t2", "t3"]
+    },
+    "faq": {
+      "type": "faq",
+      "settings": { "subheading": "Support", "heading": "Frequently asked questions" },
+      "blocks": {
+        "f1": { "type": "question", "settings": { "question": "How long does shipping take?", "answer": "<p>Orders ship within 1-2 business days. Standard delivery arrives in 3-5 business days, with free shipping on orders over $99.</p>" } },
+        "f2": { "type": "question", "settings": { "question": "What's your return policy?", "answer": "<p>We offer 30-day hassle-free returns on unused items in original packaging.</p>" } }
+      },
+      "block_order": ["f1", "f2"]
+    }
+  },
+  "order": ["intro", "stats", "mission", "values", "testimonials", "faq"]
+}

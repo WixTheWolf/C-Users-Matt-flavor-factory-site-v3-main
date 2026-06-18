@@ -2,7 +2,7 @@
   <div class="page-width footer__inner">
     <div class="footer__brand">
       {%- if settings.logo != blank -%}
-        <img src="{{ settings.logo | image_url: width: 300 }}" alt="{{ shop.name | escape }}" width="160" loading="lazy" class="footer__logo">
+        <img src="{{ settings.logo | image_url: width: 300 }}" alt="{{ shop.name | escape }}" width="{{ settings.logo.width }}" height="{{ settings.logo.height }}" loading="lazy" class="footer__logo">
       {%- else -%}
         <span class="footer__logo-text">{{ shop.name }}</span>
       {%- endif -%}

@@ -9,8 +9,9 @@
         <img
           src="{{ settings.logo | image_url: width: 400 }}"
           alt="{{ shop.name | escape }}"
-          width="{{ settings.logo_width }}"
-          style="width: {{ settings.logo_width }}px;"
+          width="{{ settings.logo.width }}"
+          height="{{ settings.logo.height }}"
+          style="width: {{ settings.logo_width }}px; height: auto;"
           loading="eager"
         >
       {%- else -%}

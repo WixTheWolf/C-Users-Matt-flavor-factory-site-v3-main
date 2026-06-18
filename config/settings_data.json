@@ -19,6 +19,9 @@
     "cart_type": "drawer",
     "show_cart_note": true,
     "free_shipping_text": "<p>Free shipping on orders over $99</p>",
+    "show_shipping_bar": true,
+    "free_shipping_threshold": 99,
+    "enable_quick_add": true,
     "sections": {},
     "content_for_index": []
   },

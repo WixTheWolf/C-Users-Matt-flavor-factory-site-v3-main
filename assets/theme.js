@@ -152,10 +152,32 @@
     bindCartLineEvents();
   }
 
+  function updateShippingBar(totalPrice, itemCount) {
+    if (!theme.showShippingBar) return;
+    var bar = $('[data-shipping-bar]');
+    if (!bar) return;
+    var threshold = theme.freeShippingThreshold || 0;
+    if (threshold <= 0) return;
+    bar.hidden = itemCount === 0;
+    var remaining = threshold - totalPrice;
+    var textEl = $('[data-shipping-text]', bar);
+    var fillEl = $('[data-shipping-fill]', bar);
+    if (textEl) {
+      textEl.innerHTML = remaining > 0
+        ? "You're <strong>" + formatMoney(remaining) + "</strong> away from free shipping!"
+        : "🎉 You've unlocked <strong>free shipping!</strong>";
+    }
+    if (fillEl) {
+      var pct = Math.min(100, Math.round((totalPrice / threshold) * 100));
+      fillEl.style.width = pct + '%';
+    }
+  }
+
   function refreshCart(openAfter) {
     return getCart().then(function (cart) {
       updateCartCount(cart.item_count);
       renderDrawer(cart);
+      updateShippingBar(cart.total_price, cart.item_count);
       if (openAfter && theme.cartType === 'drawer' && cartDrawer) openPanel(cartDrawer);
       return cart;
     });
@@ -169,6 +191,7 @@
     }).then(function (r) { return r.json(); }).then(function (cart) {
       updateCartCount(cart.item_count);
       renderDrawer(cart);
+      updateShippingBar(cart.total_price, cart.item_count);
       // If on the cart page, reload to reflect totals/rows
       if (document.body.classList.contains('template-cart')) window.location.reload();
       return cart;
@@ -234,6 +257,51 @@
         });
     });
   }
+
+  /* ---------- Product recommendations (Search & Discovery API) ---------- */
+  var recEl = $('[data-product-recommendations]');
+  if (recEl && recEl.dataset.url) {
+    fetch(recEl.dataset.url, { headers: { 'Accept': 'text/html' } })
+      .then(function (r) { return r.text(); })
+      .then(function (text) {
+        var doc = new DOMParser().parseFromString(text, 'text/html');
+        var inner = doc.querySelector('[data-product-recommendations]');
+        if (inner && inner.innerHTML.trim().length) {
+          recEl.innerHTML = inner.innerHTML;
+          // Re-bind quick-add for the freshly injected cards
+          bindQuickAdd($all('[data-quick-add]', recEl));
+        }
+      })
+      .catch(function () {});
+  }
+
+  /* ---------- Quick add from product cards ---------- */
+  function bindQuickAdd(buttons) {
+    buttons.forEach(function (btn) {
+      if (btn._quickBound) return;
+      btn._quickBound = true;
+      btn.addEventListener('click', function () {
+        var id = this.getAttribute('data-variant-id');
+        if (!id) return;
+        var label = $('[data-quick-add-label]', this) || this;
+        var prev = label.textContent;
+        var self = this;
+        self.disabled = true;
+        label.textContent = 'Adding…';
+        fetch(routes.cart_add_url + '.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ id: id, quantity: 1 })
+        }).then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+          .then(function (res) {
+            if (!res.ok) { label.textContent = (res.data && res.data.description) || 'Unavailable'; }
+            else { label.textContent = 'Added ✓'; refreshCart(theme.cartType === 'drawer'); }
+            setTimeout(function () { label.textContent = prev; self.disabled = false; }, 1400);
+          }).catch(function () { label.textContent = prev; self.disabled = false; });
+      });
+    });
+  }
+  bindQuickAdd($all('[data-quick-add]'));
 
   /* ---------- Variant selection ---------- */
   var productEl = $('[data-product]');

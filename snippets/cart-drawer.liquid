@@ -7,6 +7,24 @@
       <button class="cart-drawer__close" data-cart-close aria-label="{{ 'general.accessibility.close' | t }}">{% render 'icon', name: 'close' %}</button>
     </header>
 
+    {%- if settings.show_shipping_bar and settings.free_shipping_threshold > 0 -%}
+      {%- assign threshold_cents = settings.free_shipping_threshold | times: 100 -%}
+      {%- assign remaining = threshold_cents | minus: cart.total_price -%}
+      <div class="shipping-bar" data-shipping-bar {% if cart.item_count == 0 %}hidden{% endif %}>
+        <p class="shipping-bar__text" data-shipping-text>
+          {%- if remaining > 0 -%}
+            You're <strong>{{ remaining | money }}</strong> away from free shipping!
+          {%- else -%}
+            🎉 You've unlocked <strong>free shipping!</strong>
+          {%- endif -%}
+        </p>
+        <div class="shipping-bar__track">
+          {%- assign pct = cart.total_price | times: 100 | divided_by: threshold_cents -%}
+          <div class="shipping-bar__fill" data-shipping-fill style="width: {% if pct > 100 %}100{% else %}{{ pct }}{% endif %}%;"></div>
+        </div>
+      </div>
+    {%- endif -%}
+
     <div class="cart-drawer__body" data-cart-body>
       {%- if cart.item_count > 0 -%}
         <ul class="cart-drawer__items">

@@ -38,6 +38,8 @@
                 srcset="{{ card_product.media[1] | image_url: width: 300 }} 300w, {{ card_product.media[1] | image_url: width: 600 }} 600w"
                 sizes="(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw"
                 alt=""
+                width="{{ card_product.media[1].width }}"
+                height="{{ card_product.media[1].height }}"
                 loading="lazy"
                 class="product-card__image product-card__image--secondary"
               >
@@ -65,6 +67,21 @@
           <a href="{{ card_product.url }}">{{ card_product.title | escape }}</a>
         </h3>
         {% render 'price', product: card_product %}
+
+        {%- if settings.enable_quick_add and card_product.available -%}
+          {%- if card_product.variants.size == 1 -%}
+            <button
+              type="button"
+              class="button button--outline product-card__quick-add"
+              data-quick-add
+              data-variant-id="{{ card_product.selected_or_first_available_variant.id }}"
+            >
+              <span data-quick-add-label>Quick add</span>
+            </button>
+          {%- else -%}
+            <a href="{{ card_product.url }}" class="button button--outline product-card__quick-add">Choose options</a>
+          {%- endif -%}
+        {%- endif -%}
       </div>
     </div>
   {%- else -%}
@@ -73,7 +90,7 @@
         {{ 'product-1' | placeholder_svg_tag: 'product-card__image placeholder' }}
       </div>
       <div class="product-card__info">
-        <h3 class="product-card__title">{{ 'onboarding.product_title' | t | default: 'Example product' }}</h3>
+        <h3 class="product-card__title">Example product</h3>
         <div class="price"><span class="price__current">{{ 1999 | money }}</span></div>
       </div>
     </div>

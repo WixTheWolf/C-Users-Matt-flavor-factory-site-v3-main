@@ -4,7 +4,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ 'gift_cards.issued.title' | t: value: gift_card.initial_value | money, shop: shop.name | default: shop.name }}</title>
+    {%- assign gc_value = gift_card.initial_value | money -%}
+    <title>{{ 'gift_cards.issued.title' | t: value: gc_value, shop: shop.name }}</title>
     <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
     {%- if settings.favicon != blank -%}
       <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
@@ -71,7 +72,7 @@
 
         {%- if gift_card.pass_url -%}
           <a class="gc__wallet" href="{{ gift_card.pass_url }}">
-            <img src="{{ 'gift-card/add-to-apple-wallet.svg' | shopify_asset_url }}" alt="Add to Apple Wallet" height="44">
+            <img src="{{ 'gift-card/add-to-apple-wallet.svg' | shopify_asset_url }}" alt="Add to Apple Wallet" width="120" height="44">
           </a>
         {%- endif -%}
       </div>

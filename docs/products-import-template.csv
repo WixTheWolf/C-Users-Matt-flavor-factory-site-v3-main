@@ -1,0 +1,14 @@
+Handle,Title,Body (HTML),Vendor,Type,Tags,Published,Option1 Name,Option1 Value,Variant SKU,Variant Inventory Tracker,Variant Inventory Qty,Variant Inventory Policy,Variant Fulfillment Service,Variant Price,Variant Compare At Price,Variant Requires Shipping,Variant Taxable,Image Src,Image Position,Status
+pro-tour-driver,Pro Tour Driver,"<p>Adjustable 460cc titanium driver engineered for distance and forgiveness. Sample product — edit price, inventory, and images before publishing.</p>",WYX Golf,Clubs,"clubs,drivers,sample",FALSE,Loft,9.5°,WYX-DRV-095,shopify,0,deny,manual,499.00,599.00,TRUE,TRUE,,1,draft
+pro-tour-driver,,,WYX Golf,Clubs,,FALSE,Loft,10.5°,WYX-DRV-105,shopify,0,deny,manual,499.00,599.00,TRUE,TRUE,,,draft
+players-iron-set,Players Iron Set (4-PW),"<p>Forged 7-piece iron set with a soft feel and tour-level control. Sample product — edit before publishing.</p>",WYX Golf,Clubs,"clubs,irons,sample",FALSE,Hand,Right,WYX-IRN-RH,shopify,0,deny,manual,899.00,,TRUE,TRUE,,1,draft
+players-iron-set,,,WYX Golf,Clubs,,FALSE,Hand,Left,WYX-IRN-LH,shopify,0,deny,manual,899.00,,TRUE,TRUE,,,draft
+tour-soft-golf-balls,Tour Soft Golf Balls (Dozen),"<p>Low-compression, tour-soft golf balls for distance and greenside spin. Sample product — edit before publishing.</p>",WYX Golf,Balls,"balls,sample",FALSE,Color,White,WYX-BALL-WHT,shopify,0,deny,manual,39.99,49.99,TRUE,TRUE,,1,draft
+tour-soft-golf-balls,,,WYX Golf,Balls,,FALSE,Color,Yellow,WYX-BALL-YEL,shopify,0,deny,manual,39.99,49.99,TRUE,TRUE,,,draft
+performance-polo,Performance Golf Polo,"<p>Moisture-wicking stretch polo with UPF 50 sun protection. Sample product — edit before publishing.</p>",WYX Golf,Apparel,"apparel,polos,sample",FALSE,Size,S,WYX-POLO-S,shopify,0,deny,manual,59.00,,TRUE,TRUE,,1,draft
+performance-polo,,,WYX Golf,Apparel,,FALSE,Size,M,WYX-POLO-M,shopify,0,deny,manual,59.00,,TRUE,TRUE,,,draft
+performance-polo,,,WYX Golf,Apparel,,FALSE,Size,L,WYX-POLO-L,shopify,0,deny,manual,59.00,,TRUE,TRUE,,,draft
+performance-polo,,,WYX Golf,Apparel,,FALSE,Size,XL,WYX-POLO-XL,shopify,0,deny,manual,59.00,,TRUE,TRUE,,,draft
+leather-glove,Premium Cabretta Leather Glove,"<p>Soft cabretta leather glove for grip and feel in all conditions. Sample product — edit before publishing.</p>",WYX Golf,Accessories,"accessories,gloves,sample",FALSE,Size,M,WYX-GLV-M,shopify,0,deny,manual,24.99,,TRUE,TRUE,,1,draft
+leather-glove,,,WYX Golf,Accessories,,FALSE,Size,L,WYX-GLV-L,shopify,0,deny,manual,24.99,,TRUE,TRUE,,,draft
+tour-cart-bag,Tour Cart Bag,"<p>14-way organizer top cart bag with insulated cooler pocket. Sample product — edit before publishing.</p>",WYX Golf,Accessories,"accessories,bags,sample",FALSE,Color,Black,WYX-BAG-BLK,shopify,0,deny,manual,229.00,279.00,TRUE,TRUE,,1,draft

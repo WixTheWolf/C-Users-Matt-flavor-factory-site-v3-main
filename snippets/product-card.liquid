@@ -65,6 +65,21 @@
           <a href="{{ card_product.url }}">{{ card_product.title | escape }}</a>
         </h3>
         {% render 'price', product: card_product %}
+
+        {%- if settings.enable_quick_add and card_product.available -%}
+          {%- if card_product.variants.size == 1 -%}
+            <button
+              type="button"
+              class="button button--outline product-card__quick-add"
+              data-quick-add
+              data-variant-id="{{ card_product.selected_or_first_available_variant.id }}"
+            >
+              <span data-quick-add-label>Quick add</span>
+            </button>
+          {%- else -%}
+            <a href="{{ card_product.url }}" class="button button--outline product-card__quick-add">Choose options</a>
+          {%- endif -%}
+        {%- endif -%}
       </div>
     </div>
   {%- else -%}

@@ -92,6 +92,8 @@
       window.theme = {
         moneyFormat: {{ shop.money_format | json }},
         cartType: {{ settings.cart_type | json }},
+        showShippingBar: {{ settings.show_shipping_bar | json }},
+        freeShippingThreshold: {{ settings.free_shipping_threshold | times: 100 | json }},
         strings: {
           addToCart: {{ 'products.product.add_to_cart' | t | json }},
           soldOut: {{ 'products.product.sold_out' | t | json }},

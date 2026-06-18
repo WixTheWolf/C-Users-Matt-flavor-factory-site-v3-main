@@ -348,6 +348,19 @@ ul { list-style: none; margin: 0; padding: 0; }
 .password-page__input { flex: 1; padding: .85rem 1.1rem; border: none; border-radius: var(--button-radius, 999px); font-size: 1rem; }
 .password-page__footer { margin-top: 1.5rem; font-size: .82rem; opacity: .8; }
 
+/* ---------- Free shipping progress bar ---------- */
+.shipping-bar { padding: 1rem 1.5rem .5rem; border-bottom: 1px solid #eee; }
+.shipping-bar__text { margin: 0 0 .6rem; font-size: .85rem; text-align: center; }
+.shipping-bar__track { height: 8px; background: var(--color-muted); border-radius: 999px; overflow: hidden; }
+.shipping-bar__fill { height: 100%; background: linear-gradient(90deg, var(--color-accent), var(--color-primary)); border-radius: 999px; transition: width .5s var(--ease); }
+
+/* ---------- Quick add ---------- */
+.product-card__quick-add { width: 100%; margin-top: .6rem; padding: .55rem 1rem; font-size: .82rem; }
+@media (hover: hover) and (min-width: 750px) {
+  .product-card__quick-add { opacity: 0; transform: translateY(4px); transition: opacity .2s, transform .2s; }
+  .product-card:hover .product-card__quick-add, .product-card:focus-within .product-card__quick-add { opacity: 1; transform: translateY(0); }
+}
+
 /* ---------- Facets / filtering ---------- */
 .collection__layout--with-facets { display: grid; grid-template-columns: 260px 1fr; gap: 2.5rem; align-items: start; }
 .collection__toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid #eee; flex-wrap: wrap; gap: .75rem; }

@@ -1,0 +1,54 @@
+<div class="customer section-padding">
+  <div class="page-width page-width--narrow">
+    <h1 class="customer__title">{{ 'customer.login.title' | t }}</h1>
+
+    {%- comment -%} Recover password form {%- endcomment -%}
+    <div id="RecoverPassword" class="customer__recover" hidden>
+      <h2>Reset your password</h2>
+      <p>We will send you an email to reset your password.</p>
+      {%- form 'recover_customer_password' -%}
+        {% if form.posted_successfully? %}<p class="customer__success">We've sent you an email with a link to update your password.</p>{% endif %}
+        <div class="customer__row">
+          <label for="RecoverEmail">{{ 'customer.login.email' | t }}</label>
+          <input type="email" id="RecoverEmail" name="email" autocorrect="off" autocapitalize="off" required>
+        </div>
+        <button type="submit" class="button button--primary">Submit</button>
+        <button type="button" class="customer__link" data-recover-hide>Cancel</button>
+      {%- endform -%}
+    </div>
+
+    <div id="LoginForm" class="customer__login">
+      {%- form 'customer_login' -%}
+        {{ form.errors | default_errors }}
+        <div class="customer__row">
+          <label for="CustomerEmail">{{ 'customer.login.email' | t }}</label>
+          <input type="email" id="CustomerEmail" name="customer[email]" autocomplete="email" autocorrect="off" autocapitalize="off" required>
+        </div>
+        <div class="customer__row">
+          <label for="CustomerPassword">{{ 'customer.login.password' | t }}</label>
+          <input type="password" id="CustomerPassword" name="customer[password]" autocomplete="current-password" required>
+        </div>
+        <div class="customer__actions">
+          <button type="submit" class="button button--primary">{{ 'customer.login.sign_in' | t }}</button>
+          <button type="button" class="customer__link" data-recover-show>Forgot password?</button>
+        </div>
+      {%- endform -%}
+      {%- if shop.customer_accounts_optional -%}
+        <p class="customer__alt">New customer? <a href="{{ routes.account_register_url }}">{{ 'customer.login.create_account' | t }}</a></p>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var show = document.querySelector('[data-recover-show]');
+    var hide = document.querySelector('[data-recover-hide]');
+    var login = document.getElementById('LoginForm');
+    var recover = document.getElementById('RecoverPassword');
+    function toggle(showRecover) { recover.hidden = !showRecover; login.hidden = showRecover; }
+    if (show) show.addEventListener('click', function () { toggle(true); });
+    if (hide) hide.addEventListener('click', function () { toggle(false); });
+    if (window.location.hash === '#recover') toggle(true);
+  })();
+</script>

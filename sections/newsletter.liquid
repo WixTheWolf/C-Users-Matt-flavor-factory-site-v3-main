@@ -1,0 +1,44 @@
+<div class="newsletter section-padding" style="--nl-bg: {{ section.settings.bg_color }}; --nl-text: {{ section.settings.text_color }};">
+  <div class="page-width newsletter__inner">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="newsletter__heading">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    {%- if section.settings.subtext != blank -%}
+      <div class="newsletter__subtext rte">{{ section.settings.subtext }}</div>
+    {%- endif -%}
+
+    {%- form 'customer', class: 'newsletter__form' -%}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      <div class="newsletter__field">
+        <input
+          type="email"
+          name="contact[email]"
+          placeholder="{{ 'general.newsletter_form.email_placeholder' | t }}"
+          required
+          class="newsletter__input"
+          aria-label="{{ 'general.newsletter_form.email_placeholder' | t }}"
+        >
+        <button type="submit" class="button button--primary newsletter__submit">{{ 'general.newsletter_form.subscribe' | t }}</button>
+      </div>
+      {%- if form.posted_successfully? -%}
+        <p class="newsletter__success">{{ 'general.newsletter_form.confirmation' | t }}</p>
+      {%- endif -%}
+      {%- if form.errors -%}
+        <p class="newsletter__error">{{ form.errors | default_errors }}</p>
+      {%- endif -%}
+    {%- endform -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Join the WYX clubhouse" },
+    { "type": "richtext", "id": "subtext", "label": "Subtext", "default": "<p>Get early access to drops, restocks, and members-only deals.</p>" },
+    { "type": "color", "id": "bg_color", "label": "Background", "default": "#14542E" },
+    { "type": "color", "id": "text_color", "label": "Text", "default": "#FFFFFF" }
+  ],
+  "presets": [{ "name": "Newsletter" }]
+}
+{% endschema %}

@@ -1,0 +1,103 @@
+<header class="header {% if section.settings.sticky %}header--sticky{% endif %}" data-header>
+  <div class="page-width header__inner">
+    <button class="header__icon header__menu-toggle" aria-label="{{ 'general.accessibility.menu' | t }}" data-menu-open>
+      {% render 'icon', name: 'menu' %}
+    </button>
+
+    <a href="{{ routes.root_url }}" class="header__logo">
+      {%- if settings.logo != blank -%}
+        <img
+          src="{{ settings.logo | image_url: width: 400 }}"
+          alt="{{ shop.name | escape }}"
+          width="{{ settings.logo_width }}"
+          style="width: {{ settings.logo_width }}px;"
+          loading="eager"
+        >
+      {%- else -%}
+        <span class="header__logo-text">{{ shop.name }}</span>
+      {%- endif -%}
+    </a>
+
+    <nav class="header__nav" aria-label="{{ 'sections.header.menu' | t }}">
+      <ul class="header__nav-list">
+        {%- for link in section.settings.menu.links -%}
+          <li class="header__nav-item {% if link.links != blank %}has-dropdown{% endif %}">
+            <a href="{{ link.url }}" class="header__nav-link {% if link.active %}is-active{% endif %}">{{ link.title }}</a>
+            {%- if link.links != blank -%}
+              <ul class="header__dropdown">
+                {%- for child in link.links -%}
+                  <li><a href="{{ child.url }}" class="header__dropdown-link">{{ child.title }}</a></li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </nav>
+
+    <div class="header__actions">
+      <button class="header__icon" aria-label="{{ 'general.accessibility.search' | t }}" data-search-open>
+        {% render 'icon', name: 'search' %}
+      </button>
+      <a href="{{ routes.account_url }}" class="header__icon header__icon--account" aria-label="{{ 'general.accessibility.cart' | t }}">
+        {% render 'icon', name: 'account' %}
+      </a>
+      <a href="{{ routes.cart_url }}" class="header__icon header__cart" aria-label="{{ 'general.accessibility.cart' | t }}" {% if settings.cart_type == 'drawer' %}data-cart-open{% endif %}>
+        {% render 'icon', name: 'cart' %}
+        <span class="header__cart-count {% if cart.item_count == 0 %}is-empty{% endif %}" data-cart-count>{{ cart.item_count }}</span>
+      </a>
+    </div>
+  </div>
+
+  {%- comment -%} Slide-out search {%- endcomment -%}
+  <div class="search-modal" data-search-modal hidden>
+    <div class="search-modal__overlay" data-search-close></div>
+    <div class="search-modal__panel">
+      <div class="search-modal__top">
+        <form action="{{ routes.search_url }}" method="get" role="search" class="search-modal__form">
+          <input type="search" name="q" placeholder="{{ 'general.search.placeholder' | t }}" class="search-modal__input" autocomplete="off" data-predictive-input>
+          <button type="submit" class="search-modal__submit" aria-label="{{ 'general.search.search' | t }}">{% render 'icon', name: 'search' %}</button>
+        </form>
+        <button class="search-modal__close" data-search-close aria-label="{{ 'general.accessibility.close' | t }}">{% render 'icon', name: 'close' %}</button>
+      </div>
+      <div class="search-modal__results" data-predictive-results hidden></div>
+    </div>
+  </div>
+</header>
+
+{%- comment -%} Mobile nav drawer {%- endcomment -%}
+<div class="mobile-nav" data-mobile-nav hidden>
+  <div class="mobile-nav__overlay" data-menu-close></div>
+  <div class="mobile-nav__panel">
+    <div class="mobile-nav__header">
+      <span class="mobile-nav__title">{{ shop.name }}</span>
+      <button class="mobile-nav__close" data-menu-close aria-label="{{ 'general.accessibility.close' | t }}">{% render 'icon', name: 'close' %}</button>
+    </div>
+    <ul class="mobile-nav__list">
+      {%- for link in section.settings.menu.links -%}
+        <li>
+          <a href="{{ link.url }}" class="mobile-nav__link">{{ link.title }}</a>
+          {%- if link.links != blank -%}
+            <ul class="mobile-nav__sublist">
+              {%- for child in link.links -%}
+                <li><a href="{{ child.url }}" class="mobile-nav__sublink">{{ child.title }}</a></li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>
+
+{% render 'cart-drawer' %}
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" },
+    { "type": "checkbox", "id": "sticky", "label": "Sticky header", "default": true }
+  ]
+}
+{% endschema %}

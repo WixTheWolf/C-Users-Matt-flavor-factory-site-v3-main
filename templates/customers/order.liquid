@@ -1,0 +1,54 @@
+<div class="customer section-padding">
+  <div class="page-width">
+    <h1 class="customer__title">Order {{ order.name }}</h1>
+    <p class="customer__order-date">Placed on {{ order.created_at | date: '%B %d, %Y %I:%M %p' }}</p>
+
+    {%- if order.cancelled -%}
+      <p class="customer__cancelled">Order cancelled on {{ order.cancelled_at | date: '%B %d, %Y' }} — {{ order.cancel_reason_label }}</p>
+    {%- endif -%}
+
+    <table class="cart-table">
+      <thead>
+        <tr><th>Product</th><th>Price</th><th>Qty</th><th>Total</th></tr>
+      </thead>
+      <tbody>
+        {%- for line_item in order.line_items -%}
+          <tr>
+            <td class="cart-table__title">
+              <a href="{{ line_item.product.url }}">{{ line_item.title }}</a>
+              {%- if line_item.fulfillment -%}<br><small>Fulfilled {{ line_item.fulfillment.created_at | date: '%b %d, %Y' }}</small>{%- endif -%}
+            </td>
+            <td>{{ line_item.price | money }}</td>
+            <td>{{ line_item.quantity }}</td>
+            <td>{{ line_item.final_line_price | money }}</td>
+          </tr>
+        {%- endfor -%}
+      </tbody>
+      <tfoot>
+        <tr><td colspan="3">Subtotal</td><td>{{ order.line_items_subtotal_price | money }}</td></tr>
+        {%- for shipping_method in order.shipping_methods -%}
+          <tr><td colspan="3">Shipping ({{ shipping_method.title }})</td><td>{{ shipping_method.price | money }}</td></tr>
+        {%- endfor -%}
+        {%- for tax_line in order.tax_lines -%}
+          <tr><td colspan="3">Tax ({{ tax_line.title }} {{ tax_line.rate_percentage }}%)</td><td>{{ tax_line.price | money }}</td></tr>
+        {%- endfor -%}
+        <tr><td colspan="3"><strong>Total</strong></td><td><strong>{{ order.total_net_amount | money }}</strong></td></tr>
+      </tfoot>
+    </table>
+
+    <div class="customer__addresses">
+      <div>
+        <h2>Billing address</h2>
+        <p>{{ order.billing_address.name }}</p>
+        {{ order.billing_address | format_address }}
+      </div>
+      <div>
+        <h2>Shipping address</h2>
+        <p>{{ order.shipping_address.name }}</p>
+        {{ order.shipping_address | format_address }}
+      </div>
+    </div>
+
+    <a href="{{ routes.account_url }}" class="customer__link">&larr; Back to account</a>
+  </div>
+</div>

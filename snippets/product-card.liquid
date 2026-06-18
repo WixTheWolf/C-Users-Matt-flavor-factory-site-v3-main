@@ -1,0 +1,81 @@
+{%- comment -%}
+  Renders a product card.
+  Accepts:
+  - card_product: {Object} product
+  - lazy_load: {Boolean}
+{%- endcomment -%}
+
+{%- liquid
+  assign ratio = 1
+  if card_product.featured_media and card_product.featured_media.aspect_ratio
+    assign ratio = card_product.featured_media.aspect_ratio
+  endif
+  assign on_sale = false
+  if card_product.compare_at_price > card_product.price
+    assign on_sale = true
+  endif
+-%}
+
+<div class="card-wrapper">
+  {%- if card_product and card_product != empty -%}
+    <div class="product-card">
+      <a href="{{ card_product.url }}" class="product-card__media-link" aria-label="{{ card_product.title | escape }}">
+        <div class="product-card__media media--ratio" style="--ratio: {{ ratio }};">
+          {%- if card_product.featured_media -%}
+            <img
+              src="{{ card_product.featured_media | image_url: width: 600 }}"
+              srcset="{{ card_product.featured_media | image_url: width: 300 }} 300w, {{ card_product.featured_media | image_url: width: 600 }} 600w, {{ card_product.featured_media | image_url: width: 900 }} 900w"
+              sizes="(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw"
+              alt="{{ card_product.featured_media.alt | escape }}"
+              width="{{ card_product.featured_media.width }}"
+              height="{{ card_product.featured_media.height }}"
+              loading="{% if lazy_load == false %}eager{% else %}lazy{% endif %}"
+              class="product-card__image product-card__image--primary"
+            >
+            {%- if settings.show_secondary_image and card_product.media[1] -%}
+              <img
+                src="{{ card_product.media[1] | image_url: width: 600 }}"
+                srcset="{{ card_product.media[1] | image_url: width: 300 }} 300w, {{ card_product.media[1] | image_url: width: 600 }} 600w"
+                sizes="(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw"
+                alt=""
+                loading="lazy"
+                class="product-card__image product-card__image--secondary"
+              >
+            {%- endif -%}
+          {%- else -%}
+            {{ 'product-1' | placeholder_svg_tag: 'product-card__image placeholder' }}
+          {%- endif -%}
+
+          <div class="product-card__badges">
+            {%- if settings.show_sale_badge and on_sale -%}
+              <span class="badge badge--sale">{{ 'products.product.on_sale' | t }}</span>
+            {%- endif -%}
+            {%- unless card_product.available -%}
+              <span class="badge badge--sold-out">{{ 'products.product.sold_out' | t }}</span>
+            {%- endunless -%}
+          </div>
+        </div>
+      </a>
+
+      <div class="product-card__info">
+        {%- if settings.show_vendor and card_product.vendor != blank -%}
+          <p class="product-card__vendor">{{ card_product.vendor }}</p>
+        {%- endif -%}
+        <h3 class="product-card__title">
+          <a href="{{ card_product.url }}">{{ card_product.title | escape }}</a>
+        </h3>
+        {% render 'price', product: card_product %}
+      </div>
+    </div>
+  {%- else -%}
+    <div class="product-card product-card--placeholder">
+      <div class="product-card__media media--ratio" style="--ratio: 1;">
+        {{ 'product-1' | placeholder_svg_tag: 'product-card__image placeholder' }}
+      </div>
+      <div class="product-card__info">
+        <h3 class="product-card__title">{{ 'onboarding.product_title' | t | default: 'Example product' }}</h3>
+        <div class="price"><span class="price__current">{{ 1999 | money }}</span></div>
+      </div>
+    </div>
+  {%- endif -%}
+</div>

@@ -1,0 +1,14 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-collection-product-grid",
+      "settings": {
+        "show_description": true,
+        "enable_sorting": true,
+        "columns": 4,
+        "products_per_page": 24
+      }
+    }
+  },
+  "order": ["main"]
+}

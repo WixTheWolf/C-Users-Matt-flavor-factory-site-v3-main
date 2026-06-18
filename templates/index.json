@@ -1,0 +1,63 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero-banner",
+      "settings": {
+        "height": "large",
+        "text_align": "center",
+        "subheading": "WYX GOLF SUPPLY",
+        "heading": "Gear up for your best round",
+        "text": "<p>Premium clubs, balls, and apparel — curated for golfers who play to win.</p>",
+        "button_label": "Shop now",
+        "button_label_2": "New arrivals",
+        "overlay_opacity": 35
+      }
+    },
+    "featured": {
+      "type": "featured-collection",
+      "settings": {
+        "subheading": "Best sellers",
+        "heading": "Shop the fairway favorites",
+        "products_to_show": 8,
+        "columns": 4,
+        "show_view_all": true
+      }
+    },
+    "categories": {
+      "type": "collection-list",
+      "settings": {
+        "heading": "Shop by category",
+        "columns": 3
+      },
+      "blocks": {
+        "b1": { "type": "collection", "settings": { "title": "Clubs" } },
+        "b2": { "type": "collection", "settings": { "title": "Balls" } },
+        "b3": { "type": "collection", "settings": { "title": "Apparel" } }
+      },
+      "block_order": ["b1", "b2", "b3"]
+    },
+    "image_text": {
+      "type": "image-with-text",
+      "settings": {
+        "layout": "image-first",
+        "subheading": "Performance first",
+        "heading": "Tested on the course",
+        "text": "<p>From tee to green, every product we carry is chosen for performance and durability. Play with confidence.</p>",
+        "button_label": "Shop now"
+      }
+    },
+    "story": {
+      "type": "rich-text",
+      "settings": {
+        "text_align": "center"
+      },
+      "blocks": {
+        "s1": { "type": "subheading", "settings": { "text": "Our story" } },
+        "s2": { "type": "heading", "settings": { "text": "Built by golfers, for golfers" } },
+        "s3": { "type": "text", "settings": { "text": "<p>We started WYX Golf Supply to make premium gear accessible without the pro-shop markup. Every product is hand-picked and quality-checked.</p>" } }
+      },
+      "block_order": ["s1", "s2", "s3"]
+    }
+  },
+  "order": ["hero", "featured", "categories", "image_text", "story"]
+}

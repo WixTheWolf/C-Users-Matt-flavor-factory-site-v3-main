@@ -1,0 +1,83 @@
+<div class="customer section-padding">
+  <div class="page-width page-width--narrow">
+    <div class="customer__header">
+      <h1 class="customer__title">Your addresses</h1>
+      <a href="{{ routes.account_url }}" class="customer__link">&larr; Back to account</a>
+    </div>
+
+    <div class="customer__new-address">
+      <button type="button" class="button button--primary" data-address-toggle="AddAddress">Add a new address</button>
+      <div id="AddAddress" class="customer__address-form" hidden>
+        {%- form 'customer_address', customer.new_address -%}
+          {{ form.errors | default_errors }}
+          <div class="customer__row"><label>First name</label><input type="text" name="address[first_name]"></div>
+          <div class="customer__row"><label>Last name</label><input type="text" name="address[last_name]"></div>
+          <div class="customer__row"><label>Address</label><input type="text" name="address[address1]"></div>
+          <div class="customer__row"><label>Apartment, suite, etc.</label><input type="text" name="address[address2]"></div>
+          <div class="customer__row"><label>City</label><input type="text" name="address[city]"></div>
+          <div class="customer__row"><label>Country</label>
+            <select name="address[country]" id="AddressCountryNew" data-default="{{ form.country }}">{{ all_country_option_tags }}</select>
+          </div>
+          <div class="customer__row"><label>Province</label><select name="address[province]" id="AddressProvinceNew" data-default="{{ form.province }}"></select></div>
+          <div class="customer__row"><label>Zip / Postal code</label><input type="text" name="address[zip]"></div>
+          <div class="customer__row"><label>Phone</label><input type="tel" name="address[phone]"></div>
+          <button type="submit" class="button button--primary">Save address</button>
+          <button type="button" class="customer__link" data-address-toggle="AddAddress">Cancel</button>
+        {%- endform -%}
+      </div>
+    </div>
+
+    {%- paginate customer.addresses by 10 -%}
+      {%- for address in customer.addresses -%}
+        <div class="customer__address-card">
+          {%- if address == customer.default_address -%}<span class="badge badge--sale">Default</span>{%- endif -%}
+          <p>{{ address.name }}</p>
+          {{ address | format_address }}
+          <div class="customer__address-actions">
+            <button type="button" class="customer__link" data-address-toggle="EditAddress_{{ address.id }}">Edit</button>
+            {%- form 'customer_address', address -%}
+              {{ form.errors | default_errors }}
+            {%- endform -%}
+            <a href="#" class="customer__link customer__link--danger" data-address-delete data-url="{{ address.url }}">Delete</a>
+          </div>
+
+          <div id="EditAddress_{{ address.id }}" class="customer__address-form" hidden>
+            {%- form 'customer_address', address -%}
+              <div class="customer__row"><label>First name</label><input type="text" name="address[first_name]" value="{{ address.first_name }}"></div>
+              <div class="customer__row"><label>Last name</label><input type="text" name="address[last_name]" value="{{ address.last_name }}"></div>
+              <div class="customer__row"><label>Address</label><input type="text" name="address[address1]" value="{{ address.address1 }}"></div>
+              <div class="customer__row"><label>City</label><input type="text" name="address[city]" value="{{ address.city }}"></div>
+              <div class="customer__row"><label>Zip / Postal code</label><input type="text" name="address[zip]" value="{{ address.zip }}"></div>
+              <div class="customer__row"><label>Phone</label><input type="tel" name="address[phone]" value="{{ address.phone }}"></div>
+              <label class="customer__checkbox"><input type="checkbox" name="address[default]" value="1">Set as default</label>
+              <button type="submit" class="button button--primary">Update</button>
+              <button type="button" class="customer__link" data-address-toggle="EditAddress_{{ address.id }}">Cancel</button>
+            {%- endform -%}
+          </div>
+        </div>
+      {%- endfor -%}
+      {% render 'pagination', paginate: paginate %}
+    {%- endpaginate -%}
+  </div>
+</div>
+
+<script>
+  (function () {
+    document.querySelectorAll('[data-address-toggle]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var el = document.getElementById(this.getAttribute('data-address-toggle'));
+        if (el) el.hidden = !el.hidden;
+      });
+    });
+    document.querySelectorAll('[data-address-delete]').forEach(function (link) {
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (!confirm('Delete this address?')) return;
+        var form = document.createElement('form');
+        form.method = 'post'; form.action = this.getAttribute('data-url');
+        form.innerHTML = '<input type="hidden" name="_method" value="delete">';
+        document.body.appendChild(form); form.submit();
+      });
+    });
+  })();
+</script>

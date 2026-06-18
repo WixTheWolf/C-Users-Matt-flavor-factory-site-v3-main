@@ -1,0 +1,22 @@
+{
+  "type": "footer",
+  "name": "Footer group",
+  "sections": {
+    "value-props": {
+      "type": "value-props",
+      "settings": {}
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "heading": "Join the WYX clubhouse",
+        "subtext": "<p>Get early access to drops, restocks, and members-only deals.</p>"
+      }
+    },
+    "footer": {
+      "type": "footer",
+      "settings": {}
+    }
+  },
+  "order": ["value-props", "newsletter", "footer"]
+}

@@ -1,0 +1,72 @@
+{%- comment -%}
+  Storefront filtering + sorting.
+  Accepts: results {Object} (collection or search), enable_sorting {Boolean}
+  Filters appear automatically when configured under Search & Discovery in admin.
+{%- endcomment -%}
+<form class="facets" data-facets-form>
+  <div class="facets__bar">
+    <button type="button" class="button button--outline facets__toggle" data-facets-toggle>
+      {{ 'products.facets.filter_and_sort' | t }}
+    </button>
+
+    {%- if enable_sorting -%}
+      <div class="facets__sort">
+        <label for="SortBy" class="visually-hidden">{{ 'products.facets.sort_by_label' | t }}</label>
+        <select name="sort_by" id="SortBy" data-facet-input>
+          {%- assign sort_by = results.sort_by | default: results.default_sort_by -%}
+          {%- for option in results.sort_options -%}
+            <option value="{{ option.value }}" {% if option.value == sort_by %}selected{% endif %}>{{ option.name }}</option>
+          {%- endfor -%}
+        </select>
+      </div>
+    {%- endif -%}
+  </div>
+
+  <div class="facets__panel" data-facets-panel>
+    {%- for filter in results.filters -%}
+      <details class="facet" open>
+        <summary class="facet__summary">{{ filter.label }}{% render 'icon', name: 'chevron' %}</summary>
+        <div class="facet__content">
+          {%- case filter.type -%}
+            {%- when 'list', 'boolean' -%}
+              <ul class="facet__list">
+                {%- for value in filter.values -%}
+                  <li>
+                    <label class="facet__option {% if value.count == 0 and value.active == false %}facet__option--disabled{% endif %}">
+                      <input
+                        type="checkbox"
+                        name="{{ value.param_name }}"
+                        value="{{ value.value }}"
+                        {% if value.active %}checked{% endif %}
+                        {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                        data-facet-input
+                      >
+                      <span>{{ value.label }} ({{ value.count }})</span>
+                    </label>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            {%- when 'price_range' -%}
+              <div class="facet__price">
+                <label>
+                  <span>Min</span>
+                  <input type="number" name="{{ filter.min_value.param_name }}" min="0" max="{{ filter.range_max | money_without_currency | replace: ',', '' }}" value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}" placeholder="0" data-facet-input>
+                </label>
+                <label>
+                  <span>Max</span>
+                  <input type="number" name="{{ filter.max_value.param_name }}" min="0" max="{{ filter.range_max | money_without_currency | replace: ',', '' }}" value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}" placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}" data-facet-input>
+                </label>
+              </div>
+          {%- endcase -%}
+        </div>
+      </details>
+    {%- endfor -%}
+
+    {%- if results.filters.size > 0 -%}
+      <div class="facets__actions">
+        <a href="{{ results.url | default: request.path }}?sort_by={{ results.sort_by | default: results.default_sort_by }}" class="facets__clear">{{ 'products.facets.clear_all' | t }}</a>
+        <button type="button" class="button button--primary facets__apply" data-facets-close>{{ 'products.facets.apply' | t }}</button>
+      </div>
+    {%- endif -%}
+  </div>
+</form>

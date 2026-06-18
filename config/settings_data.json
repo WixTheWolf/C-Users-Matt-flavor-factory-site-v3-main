@@ -1,0 +1,28 @@
+{
+  "current": {
+    "color_primary": "#14542E",
+    "color_primary_dark": "#0B3D21",
+    "color_accent": "#C9A86A",
+    "color_text": "#1A1A1A",
+    "color_background": "#FFFFFF",
+    "color_muted": "#F4F2ED",
+    "color_button_text": "#FFFFFF",
+    "font_heading": "poppins_n6",
+    "font_body": "work_sans_n4",
+    "heading_scale": 100,
+    "page_width": 1280,
+    "spacing_sections": 56,
+    "button_radius": "999px",
+    "show_vendor": true,
+    "show_secondary_image": true,
+    "show_sale_badge": true,
+    "cart_type": "drawer",
+    "show_cart_note": true,
+    "free_shipping_text": "<p>Free shipping on orders over $99</p>",
+    "sections": {},
+    "content_for_index": []
+  },
+  "presets": {
+    "WYX Golf Supply": {}
+  }
+}

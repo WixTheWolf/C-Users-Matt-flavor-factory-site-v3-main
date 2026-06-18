@@ -1,0 +1,41 @@
+{%- comment -%}
+  Renders a price block.
+  Accepts:
+  - product: {Object} product object (optional)
+  - placeholder: {Boolean} render placeholder
+  - use_variant: {Boolean} use selected/first variant price
+{%- endcomment -%}
+
+{%- liquid
+  if use_variant
+    assign target = product.selected_or_first_available_variant
+  elsif placeholder
+    assign target = null
+  else
+    assign target = product
+  endif
+
+  assign compare_at_price = target.compare_at_price
+  assign price = target.price | default: 1999
+  assign price_min = product.price_min
+  assign price_max = product.price_max
+  assign available = target.available | default: false
+  assign money_price = price | money
+-%}
+
+<div class="price {% if available == false %}price--sold-out{% endif %} {% if compare_at_price > price %}price--on-sale{% endif %}">
+  <div class="price__container">
+    {%- if product.price_varies and product.compare_at_price_max > product.price_min == false -%}
+      <span class="price__regular">{{ 'products.product.from_price_html' | t: price: price_min | money }}</span>
+    {%- else -%}
+      {%- if compare_at_price > price -%}
+        <span class="price__sale">
+          <s class="price__compare">{{ compare_at_price | money }}</s>
+          <span class="price__current">{{ money_price }}</span>
+        </span>
+      {%- else -%}
+        <span class="price__current">{{ money_price }}</span>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</div>

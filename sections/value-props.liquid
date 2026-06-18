@@ -1,0 +1,58 @@
+<div class="value-props section-padding" style="background: {{ section.settings.bg_color }};">
+  <div class="page-width">
+    <ul class="value-props__grid">
+      {%- for block in section.blocks -%}
+        <li class="value-prop" {{ block.shopify_attributes }}>
+          <span class="value-prop__icon">{% render 'icon', name: block.settings.icon %}</span>
+          <div class="value-prop__text">
+            <h3 class="value-prop__title">{{ block.settings.title }}</h3>
+            <p class="value-prop__subtitle">{{ block.settings.subtitle }}</p>
+          </div>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Value props",
+  "settings": [
+    { "type": "color", "id": "bg_color", "label": "Background", "default": "#F4F2ED" }
+  ],
+  "blocks": [
+    {
+      "type": "prop",
+      "name": "Value prop",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "truck", "label": "Shipping" },
+            { "value": "returns", "label": "Returns" },
+            { "value": "shield", "label": "Guarantee" },
+            { "value": "support", "label": "Support" }
+          ],
+          "default": "truck"
+        },
+        { "type": "text", "id": "title", "label": "Title", "default": "Free shipping" },
+        { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "On orders over $99" }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    {
+      "name": "Value props",
+      "blocks": [
+        { "type": "prop", "settings": { "icon": "truck", "title": "Free shipping", "subtitle": "On orders over $99" } },
+        { "type": "prop", "settings": { "icon": "returns", "title": "30-day returns", "subtitle": "Hassle-free exchanges" } },
+        { "type": "prop", "settings": { "icon": "shield", "title": "Authentic gear", "subtitle": "100% genuine brands" } },
+        { "type": "prop", "settings": { "icon": "support", "title": "Expert support", "subtitle": "Real golfers, real help" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,168 @@
+<div class="product section-padding" data-product>
+  <div class="page-width product__layout">
+    {%- comment -%} Gallery {%- endcomment -%}
+    <div class="product__gallery">
+      <div class="product__media-main media--ratio" style="--ratio: 1;">
+        {%- if product.featured_media -%}
+          <img
+            id="ProductMainImage"
+            src="{{ product.featured_media | image_url: width: 1200 }}"
+            srcset="{{ product.featured_media | image_url: width: 600 }} 600w, {{ product.featured_media | image_url: width: 1200 }} 1200w, {{ product.featured_media | image_url: width: 1800 }} 1800w"
+            sizes="(min-width: 990px) 50vw, 100vw"
+            alt="{{ product.featured_media.alt | escape }}"
+            width="{{ product.featured_media.width }}"
+            height="{{ product.featured_media.height }}"
+            loading="eager"
+            fetchpriority="high"
+          >
+        {%- else -%}
+          {{ 'product-1' | placeholder_svg_tag: 'placeholder' }}
+        {%- endif -%}
+      </div>
+      {%- if product.media.size > 1 -%}
+        <ul class="product__thumbnails">
+          {%- for media in product.media -%}
+            <li>
+              <button
+                type="button"
+                class="product__thumbnail {% if forloop.first %}is-active{% endif %}"
+                data-thumb
+                data-full="{{ media | image_url: width: 1200 }}"
+                aria-label="View image {{ forloop.index }}"
+              >
+                <img src="{{ media | image_url: width: 200 }}" alt="{{ media.alt | escape }}" loading="lazy" width="80" height="80">
+              </button>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Info / buy box {%- endcomment -%}
+    <div class="product__info">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'vendor' -%}
+            {%- if product.vendor != blank -%}
+              <p class="product__vendor" {{ block.shopify_attributes }}>{{ product.vendor }}</p>
+            {%- endif -%}
+          {%- when 'title' -%}
+            <h1 class="product__title" {{ block.shopify_attributes }}>{{ product.title }}</h1>
+          {%- when 'price' -%}
+            <div class="product__price" {{ block.shopify_attributes }}>
+              {% render 'price', product: product, use_variant: true %}
+            </div>
+          {%- when 'description' -%}
+            {%- if product.description != blank -%}
+              <div class="product__description rte" {{ block.shopify_attributes }}>{{ product.description }}</div>
+            {%- endif -%}
+          {%- when 'buy_buttons' -%}
+            {%- form 'product', product, class: 'product-form', id: 'ProductForm' -%}
+              {%- unless product.has_only_default_variant -%}
+                <div class="product-form__options">
+                  {%- for option in product.options_with_values -%}
+                    <div class="product-form__option">
+                      <label class="product-form__label">{{ option.name }}</label>
+                      <div class="product-form__values">
+                        {%- for value in option.values -%}
+                          <label class="product-form__value">
+                            <input
+                              type="radio"
+                              name="option-{{ option.position }}"
+                              value="{{ value | escape }}"
+                              {% if option.selected_value == value %}checked{% endif %}
+                              data-option-selector
+                            >
+                            <span>{{ value }}</span>
+                          </label>
+                        {%- endfor -%}
+                      </div>
+                    </div>
+                  {%- endfor -%}
+                </div>
+              {%- endunless -%}
+
+              <select name="id" class="product-form__variant-select" data-variant-select hidden>
+                {%- for variant in product.variants -%}
+                  <option
+                    value="{{ variant.id }}"
+                    {% if variant == product.selected_or_first_available_variant %}selected{% endif %}
+                    {% unless variant.available %}disabled{% endunless %}
+                    data-price="{{ variant.price | money }}"
+                  >
+                    {{ variant.title }}{% unless variant.available %} - {{ 'products.product.sold_out' | t }}{% endunless %}
+                  </option>
+                {%- endfor -%}
+              </select>
+
+              <div class="product-form__quantity">
+                <label class="product-form__label">{{ 'products.product.quantity' | t }}</label>
+                <div class="qty-selector">
+                  <button type="button" class="qty-btn" data-qty-down aria-label="Decrease">&minus;</button>
+                  <input type="number" name="quantity" value="1" min="1" class="qty-input" aria-label="{{ 'products.product.quantity' | t }}">
+                  <button type="button" class="qty-btn" data-qty-up aria-label="Increase">+</button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                name="add"
+                class="button button--primary button--full product-form__submit"
+                {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}
+                data-add-to-cart
+              >
+                <span data-add-label>
+                  {%- if product.selected_or_first_available_variant.available -%}
+                    {{ 'products.product.add_to_cart' | t }}
+                  {%- else -%}
+                    {{ 'products.product.sold_out' | t }}
+                  {%- endif -%}
+                </span>
+              </button>
+
+              {{ form | payment_button }}
+            {%- endform -%}
+          {%- when 'share' -%}
+            <div class="product__meta" {{ block.shopify_attributes }}>
+              {%- if product.selected_or_first_available_variant.sku != blank -%}
+                <p class="product__sku">{{ 'products.product.sku' | t }}: {{ product.selected_or_first_available_variant.sku }}</p>
+              {%- endif -%}
+            </div>
+          {%- when 'collapsible' -%}
+            <details class="product__accordion" {{ block.shopify_attributes }}>
+              <summary>{{ block.settings.heading }}{% render 'icon', name: 'chevron' %}</summary>
+              <div class="product__accordion-content rte">{{ block.settings.content }}</div>
+            </details>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{%- comment -%} Variant JS data {%- endcomment -%}
+<script type="application/json" data-variant-json>
+  {{ product.variants | json }}
+</script>
+
+{% schema %}
+{
+  "name": "Product information",
+  "blocks": [
+    { "type": "vendor", "name": "Vendor", "limit": 1 },
+    { "type": "title", "name": "Title", "limit": 1 },
+    { "type": "price", "name": "Price", "limit": 1 },
+    { "type": "buy_buttons", "name": "Buy buttons", "limit": 1 },
+    { "type": "description", "name": "Description", "limit": 1 },
+    { "type": "share", "name": "SKU / meta", "limit": 1 },
+    {
+      "type": "collapsible",
+      "name": "Collapsible row",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Shipping & returns" },
+        { "type": "richtext", "id": "content", "label": "Content", "default": "<p>Free shipping on orders over $99. 30-day hassle-free returns.</p>" }
+      ]
+    }
+  ],
+  "settings": []
+}
+{% endschema %}

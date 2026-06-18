@@ -1,0 +1,48 @@
+<div class="stats section-padding" style="--stats-bg: {{ section.settings.bg_color }}; --stats-text: {{ section.settings.text_color }};">
+  <div class="page-width">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="stats__heading">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    <div class="stats__grid" style="--columns: {{ section.blocks.size }};">
+      {%- for block in section.blocks -%}
+        <div class="stat" {{ block.shopify_attributes }}>
+          <span class="stat__value">{{ block.settings.value }}</span>
+          <span class="stat__label">{{ block.settings.label }}</span>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Stats",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "color", "id": "bg_color", "label": "Background", "default": "#14542E" },
+    { "type": "color", "id": "text_color", "label": "Text", "default": "#FFFFFF" }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Stat",
+      "settings": [
+        { "type": "text", "id": "value", "label": "Value", "default": "10k+" },
+        { "type": "text", "id": "label", "label": "Label", "default": "Golfers served" }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    {
+      "name": "Stats",
+      "blocks": [
+        { "type": "stat", "settings": { "value": "10k+", "label": "Golfers served" } },
+        { "type": "stat", "settings": { "value": "4.9★", "label": "Average rating" } },
+        { "type": "stat", "settings": { "value": "500+", "label": "Products curated" } },
+        { "type": "stat", "settings": { "value": "48hr", "label": "Fast dispatch" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

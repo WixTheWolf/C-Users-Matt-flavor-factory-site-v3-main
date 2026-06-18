@@ -95,6 +95,11 @@
   var cartDrawer = $('[data-cart-drawer]');
   bindToggle('data-cart-open', 'data-cart-close', cartDrawer);
 
+  // Populate upsells on first load if the drawer already has items
+  if ($('[data-cart-upsell]') && $('[data-cart-line]')) {
+    getCart().then(function (cart) { loadUpsells(cart); }).catch(function () {});
+  }
+
   function getCart() {
     return fetch(routes.cart_url + '.js', { headers: { 'Accept': 'application/json' } })
       .then(function (r) { return r.json(); });
@@ -173,11 +178,67 @@
     }
   }
 
+  /* ---------- Cart upsell (complementary recommendations) ---------- */
+  function loadUpsells(cart) {
+    var wrap = $('[data-cart-upsell]');
+    var list = $('[data-cart-upsell-items]');
+    if (!wrap || !list || !routes.product_recommendations_url) return;
+    if (!cart || cart.item_count === 0) { wrap.hidden = true; return; }
+
+    var seed = cart.items[0].product_id;
+    var inCart = cart.items.map(function (i) { return i.product_id; });
+    var url = routes.product_recommendations_url + '.json?product_id=' + seed +
+      '&limit=6&intent=complementary';
+    fetch(url, { headers: { 'Accept': 'application/json' } })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        var products = (data.products || []).filter(function (p) { return inCart.indexOf(p.id) === -1; }).slice(0, 3);
+        if (!products.length) { wrap.hidden = true; return; }
+        var html = '';
+        products.forEach(function (p) {
+          var variantId = '';
+          var single = p.variants && p.variants.length === 1;
+          if (p.variants && p.variants.length) {
+            var firstAvail = p.variants.filter(function (v) { return v.available; })[0] || p.variants[0];
+            variantId = firstAvail.id;
+          }
+          var img = (p.featured_image && (p.featured_image.url || p.featured_image)) || '';
+          if (img && img.indexOf('//') === 0) img = 'https:' + img;
+          var price = (typeof p.price === 'number') ? formatMoney(p.price) : '';
+          var action = single
+            ? '<button class="cart-upsell__add" data-upsell-add data-variant-id="' + variantId + '">Add</button>'
+            : '<a class="cart-upsell__add" href="' + p.url + '">Options</a>';
+          html += '<div class="cart-upsell__item">' +
+            '<a href="' + p.url + '" class="cart-upsell__media">' + (img ? '<img src="' + img + '" alt="" width="48" height="48" loading="lazy">' : '') + '</a>' +
+            '<div class="cart-upsell__info"><a href="' + p.url + '" class="cart-upsell__title">' + p.title + '</a>' +
+            '<span class="cart-upsell__price">' + price + '</span></div>' + action + '</div>';
+        });
+        list.innerHTML = html;
+        wrap.hidden = false;
+        $all('[data-upsell-add]', list).forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var id = this.getAttribute('data-variant-id');
+            if (!id) return;
+            var self = this; self.disabled = true; self.textContent = '…';
+            fetch(routes.cart_add_url + '.js', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+              body: JSON.stringify({ id: id, quantity: 1 })
+            }).then(function (r) { return r.json(); })
+              .then(function () { refreshCart(false); })
+              .catch(function () { self.disabled = false; self.textContent = 'Add'; });
+          });
+        });
+      })
+      .catch(function () { wrap.hidden = true; });
+  }
+
   function refreshCart(openAfter) {
     return getCart().then(function (cart) {
       updateCartCount(cart.item_count);
       renderDrawer(cart);
       updateShippingBar(cart.total_price, cart.item_count);
+      loadUpsells(cart);
       if (openAfter && theme.cartType === 'drawer' && cartDrawer) openPanel(cartDrawer);
       return cart;
     });

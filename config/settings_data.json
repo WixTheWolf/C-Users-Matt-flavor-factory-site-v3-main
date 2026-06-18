@@ -22,6 +22,8 @@
     "show_shipping_bar": true,
     "free_shipping_threshold": 99,
     "enable_quick_add": true,
+    "enable_cart_upsell": true,
+    "cart_upsell_heading": "Add to your order",
     "sections": {},
     "content_for_index": []
   },

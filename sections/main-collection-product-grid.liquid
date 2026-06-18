@@ -7,30 +7,30 @@
       {%- endif -%}
     </div>
 
-    <div class="collection__toolbar">
-      <p class="collection__count">{{ 'products.facets.filter_and_sort' | t }} · {{ collection.products_count }} products</p>
-      {%- if section.settings.enable_sorting -%}
-        <form class="collection__sort" data-sort-form>
-          <label for="SortBy" class="visually-hidden">{{ 'products.facets.sort_by_label' | t }}</label>
-          <select name="sort_by" id="SortBy" data-sort-select>
-            {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
-            {%- for option in collection.sort_options -%}
-              <option value="{{ option.value }}" {% if option.value == sort_by %}selected{% endif %}>{{ option.name }}</option>
-            {%- endfor -%}
-          </select>
-        </form>
-      {%- endif -%}
-    </div>
-
     {%- paginate collection.products by section.settings.products_per_page -%}
-      <div class="product-grid" style="--columns: {{ section.settings.columns }};">
-        {%- for product in collection.products -%}
-          {% render 'product-card', card_product: product, lazy_load: forloop.index0 %}
-        {%- else -%}
-          <p class="collection__empty">No products found in this collection yet. Check back soon.</p>
-        {%- endfor -%}
+      <div class="collection__layout {% if section.settings.enable_filtering and collection.filters.size > 0 %}collection__layout--with-facets{% endif %}">
+        {%- if section.settings.enable_filtering and collection.filters.size > 0 -%}
+          <aside class="collection__sidebar">
+            {% render 'facets', results: collection, enable_sorting: section.settings.enable_sorting %}
+          </aside>
+        {%- elsif section.settings.enable_sorting -%}
+          <div class="collection__toolbar">
+            <p class="collection__count">{{ collection.products_count }} products</p>
+            {% render 'facets', results: collection, enable_sorting: true %}
+          </div>
+        {%- endif -%}
+
+        <div class="collection__main">
+          <div class="product-grid" style="--columns: {{ section.settings.columns }};">
+            {%- for product in collection.products -%}
+              {% render 'product-card', card_product: product, lazy_load: forloop.index0 %}
+            {%- else -%}
+              <p class="collection__empty">No products match these filters. Try clearing some filters.</p>
+            {%- endfor -%}
+          </div>
+          {% render 'pagination', paginate: paginate %}
+        </div>
       </div>
-      {% render 'pagination', paginate: paginate %}
     {%- endpaginate -%}
   </div>
 </div>
@@ -40,6 +40,7 @@
   "name": "Product grid",
   "settings": [
     { "type": "checkbox", "id": "show_description", "label": "Show collection description", "default": true },
+    { "type": "checkbox", "id": "enable_filtering", "label": "Enable filtering (configure in Search & Discovery)", "default": true },
     { "type": "checkbox", "id": "enable_sorting", "label": "Enable sorting", "default": true },
     { "type": "range", "id": "columns", "label": "Columns (desktop)", "min": 2, "max": 5, "step": 1, "default": 4 },
     { "type": "range", "id": "products_per_page", "label": "Products per page", "min": 8, "max": 48, "step": 4, "default": 24 }

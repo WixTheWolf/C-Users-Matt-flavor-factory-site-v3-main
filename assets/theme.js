@@ -317,14 +317,81 @@
     });
   }
 
-  /* ---------- Collection sort auto-submit ---------- */
-  var sortSelect = $('[data-sort-select]');
-  if (sortSelect) {
-    sortSelect.addEventListener('change', function () {
-      var url = new URL(window.location.href);
-      url.searchParams.set('sort_by', this.value);
-      url.searchParams.delete('page');
-      window.location.href = url.toString();
+  /* ---------- Facets (filter + sort) ---------- */
+  var facetsForm = $('[data-facets-form]');
+  if (facetsForm) {
+    var submitFacets = function () {
+      var params = new URLSearchParams(new FormData(facetsForm));
+      // Drop empty values so the URL stays clean
+      var clean = new URLSearchParams();
+      params.forEach(function (val, key) { if (val !== '') clean.append(key, val); });
+      var base = window.location.pathname;
+      window.location.href = base + '?' + clean.toString();
+    };
+    $all('[data-facet-input]', facetsForm).forEach(function (input) {
+      var evt = (input.type === 'number') ? 'change' : 'change';
+      input.addEventListener(evt, submitFacets);
+    });
+    var facetToggle = $('[data-facets-toggle]');
+    var facetPanel = $('[data-facets-panel]', facetsForm);
+    if (facetToggle && facetPanel) {
+      facetToggle.addEventListener('click', function () { facetPanel.classList.toggle('is-open'); });
+    }
+    $all('[data-facets-close]', facetsForm).forEach(function (b) {
+      b.addEventListener('click', function () { if (facetPanel) facetPanel.classList.remove('is-open'); });
+    });
+  }
+
+  /* ---------- Predictive search ---------- */
+  var psInput = $('[data-predictive-input]');
+  var psResults = $('[data-predictive-results]');
+  if (psInput && psResults) {
+    var psTimer = null;
+    var renderResults = function (data) {
+      var products = (data.resources && data.resources.results && data.resources.results.products) || [];
+      var collections = (data.resources && data.resources.results && data.resources.results.collections) || [];
+      var pages = (data.resources && data.resources.results && data.resources.results.pages) || [];
+      if (!products.length && !collections.length && !pages.length) {
+        psResults.innerHTML = '<p class="predictive__empty">No matches yet — keep typing.</p>';
+        psResults.hidden = false;
+        return;
+      }
+      var html = '';
+      if (products.length) {
+        html += '<div class="predictive__group"><h3 class="predictive__heading">Products</h3><ul class="predictive__products">';
+        products.forEach(function (p) {
+          var img = p.featured_image && p.featured_image.url ? '<img src="' + p.featured_image.url + '" alt="" width="48" height="48" loading="lazy">' : '';
+          var price = (typeof p.price === 'number') ? formatMoney(p.price) : (p.price || '');
+          html += '<li><a href="' + p.url + '" class="predictive__product">' +
+            '<span class="predictive__product-media">' + img + '</span>' +
+            '<span class="predictive__product-info"><span class="predictive__product-title">' + p.title + '</span>' +
+            '<span class="predictive__product-price">' + price + '</span></span></a></li>';
+        });
+        html += '</ul></div>';
+      }
+      if (collections.length || pages.length) {
+        html += '<div class="predictive__group"><h3 class="predictive__heading">Suggestions</h3><ul class="predictive__links">';
+        collections.concat(pages).forEach(function (c) {
+          html += '<li><a href="' + c.url + '">' + c.title + '</a></li>';
+        });
+        html += '</ul></div>';
+      }
+      psResults.innerHTML = html;
+      psResults.hidden = false;
+    };
+
+    psInput.addEventListener('input', function () {
+      var q = this.value.trim();
+      clearTimeout(psTimer);
+      if (q.length < 2) { psResults.hidden = true; psResults.innerHTML = ''; return; }
+      psTimer = setTimeout(function () {
+        var url = (routes.search_url || '/search') + '/suggest.json?q=' + encodeURIComponent(q) +
+          '&resources[type]=product,collection,page&resources[limit]=6&resources[options][unavailable_products]=last';
+        fetch(url, { headers: { 'Accept': 'application/json' } })
+          .then(function (r) { return r.json(); })
+          .then(renderResults)
+          .catch(function () { psResults.hidden = true; });
+      }, 250);
     });
   }
 })();

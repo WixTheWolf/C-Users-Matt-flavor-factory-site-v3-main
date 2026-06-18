@@ -108,6 +108,12 @@
       "back_to_blog": "Back to {{ title }}"
     }
   },
+  "gift_cards": {
+    "issued": {
+      "title": "Here's your {{ value }} gift card for {{ shop }}!",
+      "subtext": "Gift card"
+    }
+  },
   "contact": {
     "form": {
       "name": "Name",

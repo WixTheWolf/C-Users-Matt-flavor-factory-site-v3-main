@@ -1,0 +1,80 @@
+{% layout none %}
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ 'gift_cards.issued.title' | t: value: gift_card.initial_value | money, shop: shop.name | default: shop.name }}</title>
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- endif -%}
+    {%- liquid
+      assign body_font = settings.font_body
+      assign heading_font = settings.font_heading
+    -%}
+    {% style %}
+      {{ body_font | font_face: font_display: 'swap' }}
+      {{ heading_font | font_face: font_display: 'swap' }}
+      :root {
+        --color-primary: {{ settings.color_primary }};
+        --color-primary-dark: {{ settings.color_primary_dark }};
+        --color-accent: {{ settings.color_accent }};
+        --color-button-text: {{ settings.color_button_text }};
+        --font-body: {{ body_font.family }}, {{ body_font.fallback_families }};
+        --font-heading: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+        --button-radius: {{ settings.button_radius }};
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; font-family: var(--font-body, system-ui, sans-serif); background: var(--color-primary-dark); color: #1a1a1a; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem; }
+      .gc { background: #fff; border-radius: 16px; max-width: 460px; width: 100%; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+      .gc__head { background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); color: #fff; padding: 2rem; text-align: center; }
+      .gc__brand { font-family: var(--font-heading); font-weight: 700; letter-spacing: .04em; font-size: 1.1rem; }
+      .gc__label { text-transform: uppercase; letter-spacing: .18em; font-size: .7rem; opacity: .85; margin-top: 1.25rem; }
+      .gc__value { font-family: var(--font-heading); font-size: 3rem; font-weight: 700; line-height: 1; margin: .25rem 0; }
+      .gc__expired { display: inline-block; background: #c0392b; color: #fff; padding: .25rem .6rem; border-radius: 999px; font-size: .72rem; margin-top: .5rem; }
+      .gc__body { padding: 2rem; text-align: center; }
+      .gc__codebox { border: 2px dashed var(--color-accent); border-radius: 12px; padding: 1rem; font-family: 'SFMono-Regular', Menlo, monospace; font-size: 1.4rem; letter-spacing: .12em; font-weight: 700; color: var(--color-primary); }
+      .gc__hint { color: #777; font-size: .85rem; margin: 1rem 0 1.5rem; }
+      .gc__btn { display: inline-block; background: var(--color-primary); color: var(--color-button-text, #fff); padding: .85rem 1.75rem; border-radius: var(--button-radius, 999px); font-family: var(--font-heading); font-weight: 600; text-decoration: none; border: none; cursor: pointer; font-size: .95rem; }
+      .gc__btn--ghost { background: transparent; color: var(--color-primary); border: 2px solid var(--color-primary); margin-left: .5rem; }
+      .gc__wallet { display: inline-block; margin-top: 1rem; }
+      .gc__actions { margin-top: .5rem; }
+      @media print { body { background: #fff; } .gc { box-shadow: none; } .gc__actions, .gc__wallet { display: none; } }
+    {% endstyle %}
+  </head>
+  <body>
+    <main class="gc">
+      <div class="gc__head">
+        <div class="gc__brand">{{ shop.name }}</div>
+        <div class="gc__label">{{ 'gift_cards.issued.subtext' | t | default: 'Gift card' }}</div>
+        <div class="gc__value">{{ gift_card.balance | money }}</div>
+        {%- if gift_card.balance != gift_card.initial_value -%}
+          <div class="gc__label">Initial value {{ gift_card.initial_value | money }}</div>
+        {%- endif -%}
+        {%- if gift_card.expired -%}
+          <span class="gc__expired">Expired {{ gift_card.expires_on | date: '%b %d, %Y' }}</span>
+        {%- elsif gift_card.expires_on -%}
+          <div class="gc__label">Valid until {{ gift_card.expires_on | date: '%b %d, %Y' }}</div>
+        {%- endif -%}
+      </div>
+
+      <div class="gc__body">
+        <p class="gc__hint">Use this code at checkout to redeem your balance.</p>
+        <div class="gc__codebox">{{ gift_card.code | format_code }}</div>
+        <p class="gc__hint">Keep this code safe — it's as good as cash.</p>
+
+        <div class="gc__actions">
+          <button class="gc__btn" onclick="window.print()">Print</button>
+          <a class="gc__btn gc__btn--ghost" href="{{ shop.url }}">Shop now</a>
+        </div>
+
+        {%- if gift_card.pass_url -%}
+          <a class="gc__wallet" href="{{ gift_card.pass_url }}">
+            <img src="{{ 'gift-card/add-to-apple-wallet.svg' | shopify_asset_url }}" alt="Add to Apple Wallet" height="44">
+          </a>
+        {%- endif -%}
+      </div>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,6 @@
+interface:
+  display_name: "C Users Matt Flavor Factory Site V3 Main"
+  short_description: "Repo-specific patterns and workflows for C-Users-Matt-flavor-factory-site-v3-main"
+  default_prompt: "Use the C-Users-Matt-flavor-factory-site-v3-main repo skill to follow existing architecture, testing, and workflow conventions."
+policy:
+  allow_implicit_invocation: true
